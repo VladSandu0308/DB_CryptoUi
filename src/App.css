@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+
+.container {
+  margin-top: 2vh;
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+.search-bar {
+  background-color: #919cb3;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 8vh;
+}

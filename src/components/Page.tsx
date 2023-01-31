@@ -42,8 +42,10 @@ export const Page: FunctionComponent = () => {
         })
 
         console.log(tempList);
-        setCurrenciesList(tempList);
-        setGoodCurrenciesList(tempList);
+        setCurrenciesList([...tempList]);
+        setGoodCurrenciesList([...tempList]);
+
+        console.log(currenciesList === goodCurrenciesList);
       })
   }, [])
 
@@ -67,8 +69,8 @@ export const Page: FunctionComponent = () => {
             })
     
     
-            setGoodCurrenciesList(tempListCurrencies);
-            setGoodWatchList(tempListWatch);
+            setGoodCurrenciesList([...tempListCurrencies]);
+            setGoodWatchList([...tempListWatch]);
 
             console.log(tempListWatch);
 
@@ -79,6 +81,8 @@ export const Page: FunctionComponent = () => {
             setWatchList(
                 tempListWatch.filter((curr) => curr.symbol?.toLowerCase().startsWith(search.toLowerCase()))
             )
+
+            console.log(currenciesList === goodCurrenciesList);
             
             // if (search !== '') {
                 

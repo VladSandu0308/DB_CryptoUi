@@ -23,7 +23,10 @@ export const Page: FunctionComponent = () => {
   const [currenciesList, setCurrenciesList] = useState<Currency[]>([]);
   const [watchList, setWatchList] = useState<Currency[]>([]);
 
-  const [alfa, setAlfa] = useState('');
+  const [goodCurrenciesList, setGoodCurrenciesList] = useState<Currency[]>([]);
+  const [goodWatchList, setGoodWatchList] = useState<Currency[]>([]);
+
+  const [search, setSearch] = useState("");
 
   let cryptoCurrencies: string[] = ['EUR', 'USD', 'GBP', 'RON', 'AED', 'BTC'];
 
@@ -31,9 +34,6 @@ export const Page: FunctionComponent = () => {
     axios.get('https://api.exchangerate.host/symbols').then((response) => {
         var data = response.data;
         // console.log(data);
-
-        setAlfa(response.data);
-        console.log(alfa);
 
         let tempList: Currency[] = [];
 
@@ -43,11 +43,12 @@ export const Page: FunctionComponent = () => {
 
         console.log(tempList);
         setCurrenciesList(tempList);
+        setGoodCurrenciesList(tempList);
       })
   }, [])
 
   useEffect(() => {
-    if (currenciesList.length > 0) {
+    if (currenciesList.length > 0 || watchList.length > 0) {
         axios.get(`https://api.exchangerate.host/latest?base=${baseCurrency}&symbols=${cryptoCurrencies.join(',')}`).then((response) => {
             var data = response.data;
             console.log(data);
@@ -55,29 +56,52 @@ export const Page: FunctionComponent = () => {
             let tempListCurrencies: Currency[] = [];
             let tempListWatch: Currency[] = [];
     
-            currenciesList.map((crypto) => {
+            goodCurrenciesList.map((crypto) => {
                 tempListCurrencies.push({symbol: crypto.symbol, rate: data['rates'][crypto.symbol], asset: crypto.asset});
             })
+
+            console.log(goodWatchList);
     
-            watchList.map((crypto) => {
+            goodWatchList.map((crypto) => {
                 tempListWatch.push({symbol: crypto.symbol, rate: data['rates'][crypto.symbol], asset: crypto.asset});
             })
     
     
-            setCurrenciesList(tempListCurrencies);
-            setWatchList(tempListWatch);
+            setGoodCurrenciesList(tempListCurrencies);
+            setGoodWatchList(tempListWatch);
+
+            console.log(tempListWatch);
+
+            setCurrenciesList(
+                tempListCurrencies.filter((curr) => curr.symbol?.toLowerCase().startsWith(search.toLowerCase()))
+            )
+
+            setWatchList(
+                tempListWatch.filter((curr) => curr.symbol?.toLowerCase().startsWith(search.toLowerCase()))
+            )
+            
+            // if (search !== '') {
+                
+            // } else {
+            //     setCurrenciesList(tempListCurrencies)
+            //     setWatchList(tempListWatch)
+            // }
         })
     } 
   }, [baseCurrency])
 
-    const dummy = () => {
-        setAlfa('alfa');
-        console.log(alfa);
-    }
-
     useEffect(() => {
-        dummy();
-    }, []);
+        console.log(search);
+
+        setCurrenciesList(
+            goodCurrenciesList.filter((curr) => curr.symbol?.toLowerCase().startsWith(search.toLowerCase()))
+        )
+
+        setWatchList(
+            goodWatchList.filter((curr) => curr.symbol?.toLowerCase().startsWith(search.toLowerCase()))
+        )
+
+    }, [search]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setBaseCurrency(event.target.value as string);
@@ -86,7 +110,7 @@ export const Page: FunctionComponent = () => {
   return (
     <div className="container">
       <div className='search-bar'>
-        <TextField id="outlined-basic" label="Search" variant="outlined" sx={{width: '20vw'}}/>
+        <TextField value={search} onChange={(e) => setSearch(e.target.value)}  id="outlined-basic" label="Search" variant="outlined" sx={{width: '20vw'}}/>
 
         <FormControl sx={{width: '20vw'}}>
           <InputLabel id="demo-simple-select-label">Currency</InputLabel>
@@ -106,8 +130,8 @@ export const Page: FunctionComponent = () => {
 
       
 
-      <CustomTable cryptoCurrencies={watchList} otherList={currenciesList} setList={setCurrenciesList} title='Watchlist' lastColumn='Remove'/>
-      <CustomTable cryptoCurrencies={currenciesList} otherList={watchList} setList={setWatchList} title='Other Currencies' lastColumn='Add'/>
+      <CustomTable cryptoCurrencies={watchList} goodCryptoCurrencies={goodWatchList} otherList={currenciesList} goodOtherList={goodCurrenciesList} setList={setCurrenciesList} setGoodList={setGoodCurrenciesList} title='Watchlist' lastColumn='Remove'/>
+      <CustomTable cryptoCurrencies={currenciesList} goodCryptoCurrencies={goodCurrenciesList} otherList={watchList} goodOtherList={goodWatchList}  setList={setWatchList} setGoodList={setGoodWatchList} title='Other Currencies' lastColumn='Add'/>
 
     </div>
   );

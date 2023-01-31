@@ -16,23 +16,28 @@ import RemoveIcon from '@mui/icons-material/Remove';
 
 interface CryptoProps {
     cryptoCurrencies: Currency[];
+    goodCryptoCurrencies: Currency[];
     title: string;
     lastColumn: string;
     setList: React.Dispatch<React.SetStateAction<Currency[]>>;
+    setGoodList: React.Dispatch<React.SetStateAction<Currency[]>>;
     otherList: Currency[];
+    goodOtherList: Currency[];
 }
 
-export const CustomTable: FunctionComponent<CryptoProps> = ({cryptoCurrencies, title, lastColumn, otherList, setList}) => {
+export const CustomTable: FunctionComponent<CryptoProps> = ({cryptoCurrencies, goodCryptoCurrencies, title, lastColumn, otherList, goodOtherList, setList, setGoodList}) => {
     const handleChange = (row: Currency) => {
-        if (lastColumn === 'Add') {
-            var index = cryptoCurrencies.indexOf(row);
-            cryptoCurrencies.splice(index, 1);
-            setList([...otherList, row]);
-        } else {
-            var index = cryptoCurrencies.indexOf(row);
-            cryptoCurrencies.splice(index, 1);
-            setList([...otherList, row]);
-        }
+        var index = cryptoCurrencies.indexOf(row);
+
+        console.log(goodCryptoCurrencies);
+        cryptoCurrencies.splice(index, 1);
+
+        goodCryptoCurrencies.splice(index, 1);
+        console.log(goodCryptoCurrencies);
+
+
+        setList([...otherList, row]);
+        setGoodList([...goodOtherList, row]);
         console.log(row);
     };
 

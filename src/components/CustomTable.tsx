@@ -29,16 +29,16 @@ export const CustomTable: FunctionComponent<CryptoProps> = ({cryptoCurrencies, g
     const handleChange = (row: Currency) => {
         var index = cryptoCurrencies.indexOf(row);
 
-        console.log(goodCryptoCurrencies);
-        cryptoCurrencies.splice(index, 1);
-
         goodCryptoCurrencies.splice(index, 1);
-        console.log(goodCryptoCurrencies);
-
+        cryptoCurrencies.splice(index, 1);
 
         setList([...otherList, row]);
         setGoodList([...goodOtherList, row]);
-        console.log(row);
+    };
+
+    const getColor = (row: Currency) => {
+        if (row.symbol === 'BTC') return '#919cb3';
+        return '';
     };
 
     return(
@@ -60,7 +60,7 @@ export const CustomTable: FunctionComponent<CryptoProps> = ({cryptoCurrencies, g
                 {cryptoCurrencies.map((row) => (
                     <TableRow
                     key={row.symbol}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, background: getColor(row) }}
                     >
                     <TableCell component="th" scope="row">
                         {row.symbol}
